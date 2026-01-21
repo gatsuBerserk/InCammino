@@ -14,9 +14,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 type LoginScreenProps = {
   onLogin: () => void;
+  onGoToRegister: () => void;
 };
 
-export default function LoginScreen({ onLogin }: LoginScreenProps) {
+export default function LoginScreen({ onLogin, onGoToRegister }: LoginScreenProps) {
   const [codiceCensimento, setCodiceCensimento] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -24,16 +25,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
 
   const handleLogin = async () => {
     // Validazione base
-    if (!codiceCensimento && !password) {
+    if (!codiceCensimento || !password) {
       setError('Inserisci codice censimento e password');
-      return;
-    }
-    if (!codiceCensimento) {
-      setError('Inserisci il codice di censimento');
-      return;
-    }
-    if (!password) {
-      setError('Inserisci la password');
       return;
     }
 
@@ -41,11 +34,12 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     setError('');
 
     try {
+      //Per il momento statico, successivamnte implementare chiamata API al backend
       // Simulazione login
       setTimeout(() => {
         setIsLoading(false);
         console.log('Login effettuato con successo!');
-        onLogin(); // Passa al MainMenu
+        onLogin();
       }, 1000);
 
     } catch (err) {
@@ -122,6 +116,13 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 <Text style={styles.loginButtonText}>Accedi</Text>
               )}
             </TouchableOpacity>
+
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>Non hai un account? </Text>
+              <TouchableOpacity onPress={onGoToRegister} disabled={isLoading}>
+                <Text style={styles.registerLink}>Registrati</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -231,5 +232,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
+  },
+  registerText: {
+    color: '#666',
+    fontSize: 15,
+  },
+  registerLink: {
+    color: '#2d5016',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
