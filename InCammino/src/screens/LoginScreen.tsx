@@ -9,24 +9,31 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
-  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type LoginScreenProps = {
-  navigation?: any;
+  onLogin: () => void;
 };
 
-export default function LoginScreen({ navigation }: LoginScreenProps) {
+export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const [codiceCensimento, setCodiceCensimento] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleLogin = async () => {
-    // Validazione base, da implementare tutto resto, incluso gestione token ecc. e vlidazione migliore
-    if (!codiceCensimento || !password) {
+    // Validazione base
+    if (!codiceCensimento && !password) {
       setError('Inserisci codice censimento e password');
+      return;
+    }
+    if (!codiceCensimento) {
+      setError('Inserisci il codice di censimento');
+      return;
+    }
+    if (!password) {
+      setError('Inserisci la password');
       return;
     }
 
@@ -34,11 +41,11 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     setError('');
 
     try {
-      // Simulazione login di prova, naturalente da sostituire
+      // Simulazione login
       setTimeout(() => {
         setIsLoading(false);
         console.log('Login effettuato con successo!');
-        // Da implementare la navigazione al menu principale quando configureremo la navigazione
+        onLogin(); // Passa al MainMenu
       }, 1000);
 
     } catch (err) {
@@ -59,21 +66,17 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Logo */}
           <View style={styles.logoContainer}>
             <View style={styles.logoCircle}>
-              {/*Sostituire con la vera immagine del logo */}
               <Text style={styles.logoPlaceholder}>🏕️</Text>
             </View>
           </View>
 
-          {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>In Cammino</Text>
             <Text style={styles.subtitle}>Il tuo percorso scout, sempre con te</Text>
           </View>
 
-          {/* Form */}
           <View style={styles.form}>
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Codice Censimento</Text>
@@ -129,7 +132,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e8dcc4', // Beige come nel design
+    backgroundColor: '#e8dcc4',
   },
   keyboardView: {
     flex: 1,
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#2d5f3f', // Verde scuro come nel design
+    backgroundColor: '#2d5f3f',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
@@ -156,10 +159,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-  },
-  logoImage: {
-    width: 80,
-    height: 80,
   },
   logoPlaceholder: {
     fontSize: 50,
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginButton: {
-    backgroundColor: '#2d5016', // Verde scuro come nel design
+    backgroundColor: '#2d5016',
     borderRadius: 12,
     padding: 18,
     alignItems: 'center',
